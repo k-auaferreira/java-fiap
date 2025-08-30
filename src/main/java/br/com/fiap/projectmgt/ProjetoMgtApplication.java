@@ -1,4 +1,4 @@
-package br.com.fiap.projetomgt;
+package br.com.fiap.projectmgt;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
