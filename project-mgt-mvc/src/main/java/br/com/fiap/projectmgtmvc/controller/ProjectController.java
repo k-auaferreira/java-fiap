@@ -3,13 +3,18 @@ package br.com.fiap.projectmgtmvc.controller;
 import br.com.fiap.projectmgtmvc.dto.ProjectInDto;
 import br.com.fiap.projectmgtmvc.dto.ProjectOutDto;
 import br.com.fiap.projectmgtmvc.entities.Project;
+import br.com.fiap.projectmgtmvc.entities.User;
 import br.com.fiap.projectmgtmvc.mappers.ProjectMapper;
 import br.com.fiap.projectmgtmvc.services.ProjectService;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.dialect.function.CaseLeastGreatestEmulation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/projects")
+@Slf4j
 public class ProjectController {
 
     private final ProjectService projectService;
@@ -44,6 +50,9 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectOutDto> save(@Validated @RequestBody ProjectInDto project) {
         final Project saved = this.projectService.saveOrUpdate(ProjectMapper.toEntity(project));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("Project saved: {} por {}", saved.getId(),SecurityContextHolder.getContext().getAuthentication().getName() );
+        log.info("Project saved: {} por {}", user);
         return ResponseEntity.ok(ProjectMapper.toOutDto(saved));
     }
 
