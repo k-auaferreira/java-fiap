@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cliente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+<div class="max-w-4xl mx-auto p-4">
+
+
+    <div th:replace="~{fragments.html :: navbar('clientes')}"></div>
+
+
+
+    <div class="bg-white p-4 mt-4 shadow-md rounded-md">
+        <main>
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">Cadastro de cliente</h1>
+            <br/>
+
+                <form th:action="@{/clientes/save}" method="post" th:object="${cliente}">
+
+                <div class="flex items-center">
+                    <label for="cpf" class="w-32 text-gray-700">CPF</label>
+                    <input id="cpf" type="text" name="cpf" value="12345678900"
+                           placeholder="Apenas números" th:value="*{cpf}"
+                           class="w-full border rounded px-2 py-1"/>
+                </div>
+
+                <div class="flex items-center">
+                    <label for="nome" class="w-32 text-gray-700">Nome</label>
+                    <input id="nome" type="text" name="nome" value="Maria Oliveira"
+                           placeholder="Nome completo" th:value="*{nome}"
+                           class="w-full border rounded px-2 py-1"/>
+                </div>
+                <div class="flex items-center">
+                    <label for="cep" class="w-32 text-gray-700">CEP</label>
+                    <input id="cep" type="text" name="cep" value="01310100"
+                           placeholder="Apenas números (8 dígitos)"
+                           pattern="\d{8}" maxlength="8"
+                           th:value="*{cep}"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           class="w-full border rounded px-2 py-1"/>
+                </div>
+
+                <div class="pl-32 text-sm text-gray-500 space-y-1 border-l-4 border-blue-200 ml-32 py-1"
+                th:unless="${cliente.logradouro() == null}" >
+                    <p class="font-semibold text-blue-600 text-xs uppercase tracking-wide mb-1">
+                        ✓ Endereço encontrado via API ViaCEP
+                    </p>
+                    <p th:text="'Rua: '+ *{logradouro()}">Rua:</p>
+                    <p th:text="'Bairro: ' + *{bairro}">Bairro:</p>
+                    <p th:text="*{localidade} + ' / ' + *{estado}" >Teste</p>
+                </div>
+
+                <div class="flex items-center">
+                    <label for="numero" class="w-32 text-gray-700">Número</label>
+                    <input id="numero" type="text" th:field="*{numero}" name="numero" value="1578"
+                           placeholder="Ex: 123"
+                           class="w-full border rounded px-2 py-1"/>
+                </div>
+
+                <div class="flex items-center">
+                    <label for="complemento" class="w-32 text-gray-700">Complemento</label>
+                    <input id="complemento" type="text"  th:field="*{complemento}" name="complemento" value="Apto 42"
+                           placeholder="Ex: Apto 42"
+                           class="w-full border rounded px-2 py-1"/>
+                </div>
+
+                <!-- Telefone
+                     → THYMELEAF: th:field="*{telefone}"
+                -->
+                <div class="flex items-center">
+                    <label for="telefone" class="w-32 text-gray-700">Telefone</label>
+                    <input id="telefone" type="text" name="telefone" value="(11) 91234-5678"
+                           placeholder="Ex: (11) 91234-5678"
+                           class="w-full border rounded px-2 py-1"/>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+</div>
+</body>
+</html>

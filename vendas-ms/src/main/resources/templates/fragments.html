@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>...</head>
+<body>
+
+<!-- ============================================================
+     FRAGMENT: navbar(activePage)
+     Uso: <div th:replace="~{fragments.html :: navbar('home')}"></div>
+     Parâmetro activePage: 'home' | 'clientes' | 'pedidos'
+     ============================================================ -->
+<div th:fragment="navbar(activePage)">
+    <script src="/js/navbar.js"></script>
+    <nav class="flex justify-between items-center bg-white p-4 shadow-md rounded-md">
+        <div class="flex space-x-4">
+            <a th:href="@{/}"
+               th:classappend="${activePage == 'home' ? 'bg-gray-400' : 'bg-gray-200'}"
+               class="px-4 py-2 rounded">Início</a>
+            <a th:href="@{/clientes}"
+               th:classappend="${activePage == 'clientes' ? 'bg-gray-400' : 'bg-gray-200'}"
+               class="px-4 py-2 rounded">Clientes</a>
+            <a th:href="@{/pedidos}"
+               th:classappend="${activePage == 'pedidos' ? 'bg-gray-400' : 'bg-gray-200'}"
+               class="px-4 py-2 rounded">Pedidos</a>
+        </div>
+        <!-- ${session.username} e ${session.urlAvatar} são populados pelo CommonController -->
+        <div class="relative">
+            <button class="text-sm text-gray-400 focus:outline-none" id="userMenuButton">
+                <span th:text="${session.username}">devUser</span>
+                <img th:src="${session.urlAvatar}" alt="Avatar" class="w-8 h-8 rounded-full inline-block ml-2"/>
+            </button>
+        </div>
+    </nav>
+</div>
+
+<!-- ============================================================
+     FRAGMENT: dadosCliente(header, showButtons)
+     Exibe bloco com dados do cliente e botões de ação opcionais.
+     Espera o atributo "cliente" (ClienteDto) no model.
+     showButtons: true mostra botões Editar e Nova Venda
+     ============================================================ -->
+<div th:fragment="dadosCliente(header, showButtons)">
+    <div class="bg-white p-4 mt-4 shadow-md rounded-md">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4" th:text="${header}"></h1>
+        <p th:text="${cliente.nome} + ' (' + ${cliente.cpf} + ')'"></p>
+        <p th:if="${cliente.logradouro != null}"
+           th:text="${cliente.logradouro} + ', ' + ${cliente.numero}"></p>
+        <p th:if="${cliente.complemento != null}" th:text="${cliente.complemento}"></p>
+        <p th:if="${cliente.localidade != null}"
+           th:text="${cliente.localidade} + ', ' + ${cliente.estado} + ' - ' + ${cliente.cep}"></p>
+        <div class="flex space-x-4 mt-4" th:if="${showButtons}">
+            <form th:action="@{/clientes/detalhe}" method="post">
+                <input type="hidden" name="cpf" th:value="${cliente.cpf}"/>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Editar cliente</button>
+            </form>
+            <form th:action="@{/pedidos/novo}" method="post">
+                <input type="hidden" name="cpf" th:value="${cliente.cpf}"/>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Nova venda</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

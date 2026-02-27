@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<!--
+  ARQUIVO DE DEMONSTRAÇÃO — aula
+  Abrir direto no browser (sem servidor).
+  Em aula, os valores fixos serão substituídos pelas expressões Thymeleaf correspondentes.
+  Procure os comentários "→ THYMELEAF" para saber o que trocar em cada ponto.
+
+  Cenário: cliente Maria Oliveira já foi selecionado e o controller
+  populou ${cliente} e ${statuses} no model antes de renderizar esta view.
+-->
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Pedido</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+<div class="max-w-4xl mx-auto p-4">
+
+    <!-- ============================================================
+         NAVBAR
+         → THYMELEAF: substituir todo este <nav> por:
+           <div th:replace="~{fragments.html :: navbar('pedidos')}"></div>
+         ============================================================ -->
+    <nav class="flex justify-between items-center bg-white p-4 shadow-md rounded-md">
+        <div class="flex space-x-4">
+            <a href="/"         class="px-4 py-2 rounded bg-gray-200">Início</a>
+            <a href="/clientes" class="px-4 py-2 rounded bg-gray-200">Clientes</a>
+            <a href="/pedidos"  class="px-4 py-2 rounded bg-gray-400">Pedidos</a>
+            <!-- → THYMELEAF: th:classappend="${activePage == 'pedidos' ? 'bg-gray-400' : 'bg-gray-200'}" -->
+        </div>
+        <div class="relative">
+            <button class="text-sm text-gray-400 focus:outline-none" id="userMenuButton">
+                <!-- → THYMELEAF: th:text="${session.username}" -->
+                aluno-fiap
+                <!-- → THYMELEAF: th:src="${session.urlAvatar}" -->
+                <img src="https://avatars.githubusercontent.com/u/9919?s=48"
+                     alt="Avatar" class="w-8 h-8 rounded-full inline-block ml-2"/>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+         DADOS DO CLIENTE (fragment dadosCliente com showButtons=false)
+         → THYMELEAF: substituir todo este <div> por:
+           <div th:replace="~{fragments.html :: dadosCliente('Novo Pedido', false)}"></div>
+         showButtons=false: sem botões "Editar cliente" / "Nova venda"
+         O fragment lê ${cliente} (ClienteDto) do model.
+         ============================================================ -->
+    <div class="bg-white p-4 mt-4 shadow-md rounded-md">
+        <!-- → THYMELEAF: th:text="${header}" (parâmetro 'Novo Pedido' do fragment) -->
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Novo Pedido</h1>
+
+        <!-- → THYMELEAF: th:text="${cliente.nome} + ' (' + ${cliente.cpf} + ')'" -->
+        <p>Maria Oliveira (12345678900)</p>
+
+        <!-- → THYMELEAF: th:text="${cliente.logradouro} + ', ' + ${cliente.numero}" -->
+        <p>Avenida Paulista, 1578</p>
+
+        <!-- → THYMELEAF: th:text="${cliente.complemento}" -->
+        <p>Apto 42</p>
+
+        <!-- → THYMELEAF: th:text="${cliente.localidade} + ', ' + ${cliente.estado} + ' - ' + ${cliente.cep}" -->
+        <p>São Paulo, SP - 01310-100</p>
+
+        <!-- showButtons=false → este bloco NÃO aparece -->
+        <!-- → THYMELEAF: th:if="${showButtons}" -->
+    </div>
+
+    <!-- ============================================================
+         FORMULÁRIO DE NOVO PEDIDO
+         → THYMELEAF: <form th:action="@{/pedidos/novo/salvar}" method="post">
+         ============================================================ -->
+    <div class="bg-white p-4 mt-4 shadow-md rounded-md">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Novo Pedido</h1>
+
+        <form action="/pedidos/novo/salvar" method="post" class="space-y-4">
+
+            <!-- Campo oculto: transmite o CPF sem exibir na tela
+                 → THYMELEAF: th:value="${cliente.cpf}" -->
+            <input type="hidden" name="cpf" value="12345678900"/>
+
+            <!-- Descrição -->
+            <div class="flex flex-col">
+                <label for="descricao" class="text-sm font-medium text-gray-700 mb-1">
+                    Descrição
+                </label>
+                <textarea id="descricao" name="descricao"
+                          placeholder="Descreva o pedido"
+                          class="w-full border rounded px-2 py-1 resize-none"
+                          rows="3">Notebook Dell XPS 15 — 32GB RAM, 1TB SSD</textarea>
+            </div>
+
+            <!-- Select de status
+                 → THYMELEAF:
+                   <select name="status">
+                     <option th:each="s : ${statuses}"
+                             th:value="${s.name()}"
+                             th:text="${s.name()}">STATUS</option>
+                   </select>
+                 ${statuses} = Pedido.Status.values() injetado pelo PedidoController.novo()
+                 th:each gera um <option> para cada valor do enum
+            -->
+            <div class="flex flex-col">
+                <label for="status" class="text-sm font-medium text-gray-700 mb-1">
+                    Status inicial
+                </label>
+                <select id="status" name="status" class="border rounded px-2 py-1">
+                    <option value="PENDENTE_ENVIO"         selected>PENDENTE_ENVIO</option>
+                    <option value="ENVIO_EM_PROCESSAMENTO">ENVIO_EM_PROCESSAMENTO</option>
+                    <option value="FINALIZADO">            FINALIZADO</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit"
+                        class="px-4 py-2 bg-gray-800 text-white rounded">
+                    Salvar Pedido
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

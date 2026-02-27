@@ -1,0 +1,3 @@
+# Microsserviço de Gestão de Vendas
+
+Microsserviço de gestão de vendas desenvolvido com Spring Boot que permite o cadastro de clientes com enriquecimento automático de endereço via ViaCEP utilizando OpenFeign, registro de pedidos e publicação de eventos assíncronos no ActiveMQ, contando ainda com interface web construída com Thymeleaf, persistência de dados em MySQL e autenticação OAuth2 integrada ao GitHub, compondo uma solução completa com comunicação assíncrona, integração externa e arquitetura moderna baseada em microsserviços.

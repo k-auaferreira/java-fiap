@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!--
+  ARQUIVO DE DEMONSTRAÇÃO — aula
+  Abrir direto no browser (sem servidor).
+  Em aula, os valores fixos serão substituídos pelas expressões Thymeleaf correspondentes.
+  Procure os comentários "→ THYMELEAF" para saber o que trocar em cada ponto.
+
+  Nota: o botão "Localizar" aqui usa JS puro (redirectToPedidos) em vez de um <form>.
+  Isso é necessário porque a rota é GET /pedidos/detalhe/{cpf} (path variable, não query param).
+  O arquivo /js/pedidos.js já contém essa função — não precisa reescrever.
+-->
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+<div class="max-w-4xl mx-auto p-4">
+
+    <!-- ============================================================
+         NAVBAR
+         → THYMELEAF: substituir todo este <nav> por:
+           <div th:replace="~{fragments.html :: navbar('pedidos')}"></div>
+         "pedidos" → link Pedidos fica com bg-gray-400 (ativo)
+         ============================================================ -->
+    <nav class="flex justify-between items-center bg-white p-4 shadow-md rounded-md">
+        <div class="flex space-x-4">
+            <a href="/"         class="px-4 py-2 rounded bg-gray-200">Início</a>
+            <a href="/clientes" class="px-4 py-2 rounded bg-gray-200">Clientes</a>
+            <a href="/pedidos"  class="px-4 py-2 rounded bg-gray-400">Pedidos</a>
+            <!-- → THYMELEAF: th:classappend="${activePage == 'pedidos' ? 'bg-gray-400' : 'bg-gray-200'}" -->
+        </div>
+        <div class="relative">
+            <button class="text-sm text-gray-400 focus:outline-none" id="userMenuButton">
+                <!-- → THYMELEAF: th:text="${session.username}" -->
+                aluno-fiap
+                <!-- → THYMELEAF: th:src="${session.urlAvatar}" -->
+                <img src="https://avatars.githubusercontent.com/u/9919?s=48"
+                     alt="Avatar" class="w-8 h-8 rounded-full inline-block ml-2"/>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+         FORMULÁRIO DE BUSCA
+         Não usa <form> porque a rota é GET /pedidos/detalhe/{cpf} (path variable).
+         O JS monta a URL e faz window.location.href = `/pedidos/detalhe/${cpf}`.
+         → THYMELEAF: nenhuma expressão Thymeleaf nesta view — é HTML puro com JS.
+           Apenas a navbar usa th:replace.
+         ============================================================ -->
+    <div class="bg-white p-4 mt-4 shadow-md rounded-md">
+        <main class="flex flex-col items-center">
+            <p class="text-left mb-2">Localizar pedidos por cliente</p>
+            <div class="flex items-center space-x-2">
+                <input id="cpfInput" type="text"
+                       placeholder="Apenas números (11 dígitos)"
+                       pattern="\d{11}" maxlength="11"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                       class="border border-gray-300 p-2 rounded w-72"/>
+                <!-- redirectToPedidos() está em /js/pedidos.js -->
+                <button onclick="redirectToPedidos()"
+                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+                    Localizar
+                </button>
+            </div>
+
+            <!-- JS inline para o mock funcionar sem servidor -->
+            <script>
+                function redirectToPedidos() {
+                    const cpf = document.getElementById('cpfInput').value;
+                    if (cpf.length === 11) {
+                        alert('Em produção: navega para /pedidos/detalhe/' + cpf);
+                        // window.location.href = '/pedidos/detalhe/' + cpf;
+                    } else {
+                        alert('Por favor, insira um CPF válido com 11 dígitos.');
+                    }
+                }
+            </script>
+            <!-- Em produção, o JS acima vem de: <script src="/js/pedidos.js"></script> -->
+        </main>
+    </div>
+
+</div>
+</body>
+</html>
