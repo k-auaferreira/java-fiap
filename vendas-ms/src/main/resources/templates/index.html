@@ -18,29 +18,7 @@
 <body class="bg-gray-100 text-gray-900">
 <div class="max-w-4xl mx-auto p-4">
 
-    <!-- ============================================================
-         NAVBAR
-         → THYMELEAF: substituir todo este <nav> por:
-           <div th:replace="~{fragments.html :: navbar('home')}"></div>
-         "home" → link Início fica com bg-gray-400 (ativo)
-         ============================================================ -->
-    <nav class="flex justify-between items-center bg-white p-4 shadow-md rounded-md">
-        <div class="flex space-x-4">
-            <a href="/"         class="px-4 py-2 rounded bg-gray-400">Início</a>
-            <!-- → THYMELEAF: th:classappend="${activePage == 'home' ? 'bg-gray-400' : 'bg-gray-200'}" -->
-            <a href="/clientes" class="px-4 py-2 rounded bg-gray-200">Clientes</a>
-            <a href="/pedidos"  class="px-4 py-2 rounded bg-gray-200">Pedidos</a>
-        </div>
-        <div class="relative">
-            <button class="text-sm text-gray-400 focus:outline-none" id="userMenuButton">
-                <!-- → THYMELEAF: th:text="${session.username}" (populado pelo CommonController) -->
-                aluno-fiap
-                <!-- → THYMELEAF: th:src="${session.urlAvatar}" -->
-                <img src="https://avatars.githubusercontent.com/u/9919?s=48"
-                     alt="Avatar" class="w-8 h-8 rounded-full inline-block ml-2"/>
-            </button>
-        </div>
-    </nav>
+    <div th:replace="~{fragments.html :: navbar('home')}"></div>
 
     <!-- ============================================================
          CONTEÚDO PRINCIPAL

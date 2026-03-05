@@ -11,11 +11,11 @@ import java.util.UUID;
  * DTO for {@link Pedido}
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record PedidoDto(UUID id, ClienteDto cliente, String status, String descricao) implements Serializable {
+public record PedidoOutputDto(UUID id, ClienteDto cliente, String status, String descricao) implements Serializable {
 
     // Converte entidade → DTO
-    public static PedidoDto from(Pedido pedido) {
-        return new PedidoDto(
+    public static PedidoOutputDto from(Pedido pedido) {
+        return new PedidoOutputDto(
                 pedido.getId(),
                 ClienteDto.from(pedido.getCliente()),
                 pedido.getStatus().name(),
@@ -24,8 +24,14 @@ public record PedidoDto(UUID id, ClienteDto cliente, String status, String descr
     }
 
     // Converte lista de entidades → lista de DTOs
-    public static List<PedidoDto> from(List<Pedido> pedidos) {
-        return pedidos.stream().map(PedidoDto::from).toList();
+    public static List<PedidoOutputDto> from(List<Pedido> pedidos) {
+        return pedidos.stream().map(PedidoOutputDto::from).toList();
     }
 
+    public Pedido toEntity() {
+        return new Pedido(id,
+                cliente.toEntity(),
+                status == null ? Pedido.Status.PENDENTE_ENVIO : Pedido.Status.valueOf(status),
+                descricao);
+    }
 }

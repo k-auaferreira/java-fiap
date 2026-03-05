@@ -68,12 +68,10 @@
                            class="w-full border rounded px-2 py-1"/>
                 </div>
 
-                <!-- Telefone
-                     → THYMELEAF: th:field="*{telefone}"
-                -->
                 <div class="flex items-center">
                     <label for="telefone" class="w-32 text-gray-700">Telefone</label>
                     <input id="telefone" type="text" name="telefone" value="(11) 91234-5678"
+                           th:field="*{telefone}"
                            placeholder="Ex: (11) 91234-5678"
                            class="w-full border rounded px-2 py-1"/>
                 </div>

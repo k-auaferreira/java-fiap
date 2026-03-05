@@ -15,6 +15,10 @@ public class Cliente {
         super();
     }
 
+    public Cliente(String cpf) {
+        this.cpf = cpf;
+    }
+
     public Cliente(String cpf, String nome, String cep, String numero, String completo, String telefone) {
         this.cpf = cpf;
         this.nome = nome;

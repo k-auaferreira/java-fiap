@@ -1,11 +1,5 @@
 <!DOCTYPE html>
-<!--
-  ARQUIVO DE DEMONSTRAÇÃO — aula
-  Abrir direto no browser (sem servidor).
-  Em aula, os valores fixos serão substituídos pelas expressões Thymeleaf correspondentes.
-  Procure os comentários "→ THYMELEAF" para saber o que trocar em cada ponto.
--->
-<html lang="pt-BR">
+<html lang="pt-BR"  xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,14 +13,9 @@
       <div th:replace="~{fragments.html :: navbar('clientes')}"></div>
 
 
-    <!-- ============================================================
-         FORMULÁRIO DE BUSCA
-         → THYMELEAF: <form th:action="@{/clientes/detalhe}" method="post">
-         th:action garante que o context-path seja incluído na URL
-         ============================================================ -->
     <div class="bg-white p-4 mt-4 shadow-md rounded-md">
         <main class="flex flex-col items-center">
-            <form action="/clientes/detalhe" method="post">
+            <form th:action="@{/clientes/detalhe}" method="post">
                 <p class="text-left mb-2">Localizar cliente pelo CPF</p>
                 <div class="flex items-center space-x-2">
                     <input id="cpfInput" type="text" name="cpf"

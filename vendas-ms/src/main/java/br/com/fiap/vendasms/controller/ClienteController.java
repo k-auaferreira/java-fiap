@@ -27,7 +27,7 @@ public class ClienteController extends CommonController{
         return "cliente";
     }
 
-    @GetMapping("/detalhe")
+    @PostMapping("/detalhe")
     public String detalhe(@ModelAttribute ClienteDto form, Model model){
         ClienteDto clienteDto;
         try {
@@ -37,9 +37,9 @@ public class ClienteController extends CommonController{
             clienteDto = ClienteDto.empty(form.cpf());
         }
 
-        if(clienteDto.cep() != null && clienteDto.cep().isBlank()){
+        if(clienteDto.cep() != null && !clienteDto.cep().isBlank()){
             var cepDetails = this.cepApi.get(clienteDto.cep());
-            clienteDto.enrichWith(cepDetails);
+            clienteDto = clienteDto.enrichWith(cepDetails);
         }
 
         model.addAttribute("cliente",clienteDto);
@@ -56,7 +56,5 @@ public class ClienteController extends CommonController{
         this.clienteService.saveOrUpdate(cliente.toEntity());
         return "redirect:/pedidos/detalhe/"+cliente.cpf();
     }
-
-
 
 }

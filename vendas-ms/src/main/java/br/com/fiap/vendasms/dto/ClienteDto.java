@@ -21,14 +21,27 @@ public record ClienteDto(String cpf, String nome, String cep, String numero, Str
     public static ClienteDto from(Cliente cliente) {
         return new ClienteDto(cliente.getCpf(),
                 cliente.getNome(),
+                cliente.getCep(),
                 cliente.getNumero(),
                 cliente.getCompleto(),
                 cliente.getTelefone(),
                 null,
                 null,
                 null,
-                null,
                 null);
+    }
+
+    public static ClienteDto from(Cliente cliente,CepDetails cepDetails) {
+        return new ClienteDto(cliente.getCpf(),
+                cliente.getNome(),
+                cliente.getCep(),
+                cliente.getNumero(),
+                cliente.getCompleto(),
+                cliente.getTelefone(),
+                cepDetails.logradouro(),
+                cepDetails.bairro(),
+                cepDetails.localidade(),
+                cepDetails.estado());
     }
 
     public ClienteDto enrichWith(CepDetails cepDetails){
