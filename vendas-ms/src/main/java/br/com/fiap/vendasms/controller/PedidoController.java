@@ -39,7 +39,8 @@ public class PedidoController extends CommonController {
     public String detalhes(@PathVariable("cpf") String cpf, Model model) {
         final Cliente cliente = this.clienteService.findById(cpf);
         if (cliente.getNome() != null) {
-            model.addAttribute("cliente", ClienteDto.from(cliente));
+            final CepDetails cepDetails = this.cepApi.get(cliente.getCep());
+            model.addAttribute("cliente", ClienteDto.from(cliente, cepDetails));
 
             final List<Pedido> pedidos = this.pedidoService.findByClienteCpf(cpf);
             model.addAttribute("pedidos", PedidoOutputDto.from(pedidos));
@@ -73,7 +74,7 @@ public class PedidoController extends CommonController {
 
         final Pedido pedidoEntity = new Pedido(null,
                 new Cliente(pedido.getCpf()),
-                Pedido.Status.valueOf(pedido.getStatus()),
+                Pedido.Status.PENDENTE_ENVIO,
                 pedido.getDescricao());
 
         this.pedidoService.save(pedidoEntity);

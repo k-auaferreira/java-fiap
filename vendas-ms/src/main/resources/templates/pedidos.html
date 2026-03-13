@@ -1,52 +1,30 @@
 <!DOCTYPE html>
-<html lang="pt-BR"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedidos</title>
+    <title th:text="#{title.vendas}">Vendas</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-900">
 <div class="max-w-4xl mx-auto p-4">
 
+    <div th:replace="~{fragments.html :: navbar('pedidos')}"></div>
 
-           <div th:replace="~{fragments.html :: navbar('pedidos')}"></div>
-
-    <!-- ============================================================
-         FORMULÁRIO DE BUSCA
-         Não usa <form> porque a rota é GET /pedidos/detalhe/{cpf} (path variable).
-         O JS monta a URL e faz window.location.href = `/pedidos/detalhe/${cpf}`.
-         → THYMELEAF: nenhuma expressão Thymeleaf nesta view — é HTML puro com JS.
-           Apenas a navbar usa th:replace.
-         ============================================================ -->
     <div class="bg-white p-4 mt-4 shadow-md rounded-md">
         <main class="flex flex-col items-center">
-            <p class="text-left mb-2">Localizar pedidos por cliente</p>
+            <p class="text-left" th:text="#{pedido.search.title}">Localizar pedidos por cliente</p>
             <div class="flex items-center space-x-2">
-                <input id="cpfInput" type="text"
-                       placeholder="Apenas números (11 dígitos)"
-                       pattern="\d{11}" maxlength="11"
+                <input id="cpfInput" type="text" th:placeholder="#{pedido.search.cpf.placeholder}" pattern="\d{11}"
+                       maxlength="11"
                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                       class="border border-gray-300 p-2 rounded w-72"/>
-                <!-- redirectToPedidos() está em /js/pedidos.js -->
-                <button onclick="redirectToPedidos()"
-                        class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-                    Localizar
+                       class="border border-gray-300 p-2 rounded w-72">
+                <button onclick="redirectToPedidos()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                        th:text="#{pedido.search.button}">Localizar
                 </button>
             </div>
 
-            <!-- JS inline para o mock funcionar sem servidor -->
-            <script>
-                function redirectToPedidos() {
-                    const cpf = document.getElementById('cpfInput').value;
-                    if (cpf.length === 11) {
-                        window.location.href = '/pedidos/detalhe/' + cpf;
-                    } else {
-                        alert('Por favor, insira um CPF válido com 11 dígitos.');
-                    }
-                }
-            </script>
-            <!-- Em produção, o JS acima vem de: <script src="/js/pedidos.js"></script> -->
+            <script src="/js/pedidos.js"></script>
         </main>
     </div>
 

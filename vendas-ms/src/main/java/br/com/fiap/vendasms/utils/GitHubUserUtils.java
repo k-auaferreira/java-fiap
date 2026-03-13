@@ -14,10 +14,6 @@ public class GitHubUserUtils {
     }
 
     public static String getAvatar(OAuth2AuthenticationToken authentication) {
-        return "https://avatars.githubusercontent.com/u/"
-                .concat(
-                        String.valueOf(
-                                ((Integer) Objects.requireNonNull(authentication.getPrincipal().getAttribute("id")))
-                                        .longValue())).concat("?v=4");
+        return authentication.getPrincipal().getAttribute("avatar_url");
     }
 }
