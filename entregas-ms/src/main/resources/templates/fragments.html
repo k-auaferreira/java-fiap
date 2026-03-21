@@ -1,0 +1,45 @@
+<html>
+<head>
+    ...
+</head>
+<body>
+<div th:fragment="navbar(activePage)">
+    <script src="/js/navbar.js"></script>
+    <nav class="flex justify-between items-center bg-white p-4 shadow-md rounded-md">
+        <div class="flex space-x-4">
+            <a th:href="@{/}"
+               th:classappend="${activePage == 'home' ? 'bg-gray-400' : 'bg-gray-200'}"
+               th:text="#{navbar.home}"
+               class="px-4 py-2 rounded"></a>
+            <a th:href="@{/status/pendentes}"
+               th:classappend="${activePage == 'pendentes' ? 'bg-gray-400' : 'bg-gray-200'}"
+               th:text="#{navbar.pendentes}"
+               class="px-4 py-2 rounded"></a>
+            <a th:href="@{/status/em-curso}"
+               th:classappend="${activePage == 'em-curso' ? 'bg-gray-400' : 'bg-gray-200'}"
+               th:text="#{navbar.emCurso}"
+               class="px-4 py-2 rounded"></a>
+            <a th:href="@{/status/finalizados}"
+               th:classappend="${activePage == 'finalizados' ? 'bg-gray-400' : 'bg-gray-200'}"
+               th:text="#{navbar.finalizados}"
+               class="px-4 py-2 rounded"></a>
+        </div>
+        <div class="relative">
+            <button class="text-sm text-gray-400 focus:outline-none" id="userMenuButton">
+                <span th:text="${session.username}">devUser</span>
+                <img th:src="${session.urlAvatar}" alt="Avatar" class="w-8 h-8 rounded-full inline-block ml-2">
+            </button>
+            <div id="userMenu"
+                 class="hidden absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg">
+                <a href="http://localhost:8080" target="_blank"
+                   class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                   th:text="#{navbar.sistemaVendas}"></a>
+                <a href="/logout" class="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                   th:text="#{navbar.logout}"></a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+</body>
+</html>

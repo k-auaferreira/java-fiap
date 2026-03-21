@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entregas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+<div class="max-w-4xl mx-auto p-4">
+
+    <div th:replace="~{fragments.html :: navbar(${screen})}"></div>
+
+    <table class="w-full mt-4 bg-white shadow-md rounded-md">
+        <thead>
+        <tr class="bg-gray-200 rounded-md">
+            <th class="py-2 w-2/5" th:text="#{table.header.id}">Id</th>
+            <th class="py-2 w-1/5" th:text="#{table.header.status}">Status</th>
+            <th class="py-2 w-2/5" th:text="#{table.header.actions}">Ações</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:if="${#lists.isEmpty(entregas)}">
+            <td colspan="3" class="py-2 text-center text-gray-500" th:text="#{table.no.records}">Nenhum pedido
+                registrado
+            </td>
+        </tr>
+        <tr th:each="entrega : ${entregas}" th:unless="${#lists.isEmpty(entregas)}" class="border-t">
+            <td class="py-2 text-center" th:text="${entrega.id}"></td>
+            <td class="py-2 text-center" th:text="${entrega.status}"></td>
+            <td class="py-2 text-center flex justify-center space-x-2">
+                <form th:if="${screen != 'finalizados'}" th:action="@{/status/evoluir-status}" method="post">
+                    <input type="hidden" name="screen" th:value="${screen}"/>
+                    <input type="hidden" name="id" th:value="${entrega.id}"/>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Evoluir Status
+                    </button>
+                </form>
+                <button type="button"
+                        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                        th:data-name="${entrega.destinatario}"
+                        th:data-address="${entrega.enderecoCompleto}"
+                        onclick="handleDetailsClick(this)">
+                    Detalhes
+                </button>
+
+                <script>
+                    function handleDetailsClick(button) {
+                        const name = button.getAttribute('data-name');
+                        const address = button.getAttribute('data-address');
+                        openDetailsModal(name, address);
+                    }
+                </script>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <script>
+        function openDetailsModal(name, address) {
+            document.getElementById('modalName').textContent = name;
+            document.getElementById('modalAddress').textContent = address;
+            document.getElementById('detailsModal').classList.remove('hidden');
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+        }
+    </script>
+</div>
+<!-- Modal -->
+<div id="detailsModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded shadow-md w-96">
+        <h2 class="text-xl font-bold mb-4">Detalhes da Entrega</h2>
+        <p><strong>Destinatário:</strong> <span id="modalName"></span></p>
+        <p><strong>Endereço:</strong> <span id="modalAddress"></span></p>
+        <div class="mt-4 text-right">
+            <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="closeDetailsModal()">
+                Fechar
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
