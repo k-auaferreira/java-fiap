@@ -1,6 +1,7 @@
 package br.com.fiap.vendasms.configs;
 
 import br.com.fiap.vendasms.service.CustomOAuth2UserService;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +21,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
+                        .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                         .requestMatchers("/clientes/**").hasRole("CLIENTE_EDIT")
                         .requestMatchers("/pedidos/**").hasRole("PEDIDO")
                         .anyRequest().authenticated()

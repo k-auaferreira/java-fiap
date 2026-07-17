@@ -5,6 +5,9 @@ public class PedidoInputDto {
     private Long id;
     private String cpf, status, descricao;
 
+    public PedidoInputDto() {
+    }
+
     public Long getId() {
         return id;
     }

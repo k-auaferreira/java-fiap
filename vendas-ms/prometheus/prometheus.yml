@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s      # How often to scrape targets
+  evaluation_interval: 15s  # How often to evaluate rules
+
+scrape_configs:
+  # Scrape vendas-ms running on the host machine
+  - job_name: 'vendas-ms'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+        labels:
+          application: 'vendas-ms'
+
+  # Scrape ActiveMQ metrics via JMX Exporter
+  - job_name: 'activemq'
+    static_configs:
+      - targets: ['jmx-exporter:5556']
+        labels:
+          application: 'activemq'

@@ -60,7 +60,7 @@ public class Cliente {
         this.numero = numero;
     }
 
-    public String getCompleto() {
+    public String getComplemento() {
         return completo;
     }
 

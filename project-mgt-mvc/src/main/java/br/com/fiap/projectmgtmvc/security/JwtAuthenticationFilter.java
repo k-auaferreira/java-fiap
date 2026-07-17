@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,8 +38,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(jwt) && jwtUtil.validateToken(jwt)) {
             String username = jwtUtil.extractUsername(jwt);
+            List<SimpleGrantedAuthority> roles = jwtUtil.extractRole(jwt);
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            // usa a role do token
+            UserDetails userDetails = new CustomUserDetails(username, null, roles);
+
+            // usa a role que ta no banco
+            // UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication =

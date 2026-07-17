@@ -34,7 +34,7 @@ public class Entrega {
         this.status = status;
     }
 
-    public Entrega(UUID id, String nome, String enderecoCompleto) {
+    public Entrega(UUID id, String destinatario, String enderecoCompleto) {
         this.id = id;
         this.destinatario = destinatario;
         this.enderecoCompleto = enderecoCompleto;

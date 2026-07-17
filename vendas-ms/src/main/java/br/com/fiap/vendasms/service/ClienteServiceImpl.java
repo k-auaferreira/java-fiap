@@ -15,7 +15,7 @@ final class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Cliente findById(String cpf) {
-        return this.clienteRepository.findById(cpf).orElseThrow();
+        return this.clienteRepository.findById(cpf).orElse(new Cliente());
     }
 
     @Override

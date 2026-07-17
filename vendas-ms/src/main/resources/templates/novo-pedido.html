@@ -16,7 +16,7 @@
         <h1 class="text-2xl font-bold text-gray-800 mb-4" th:text="#{pedido.form.title}">Novo Pedido</h1>
         <form th:action="@{/pedidos/novo/salvar}" method="post" th:object="${pedido}" class="space-y-4">
             <div class="flex flex-col">
-                <input type="hidden" th:field="*{cliente.cpf}" th:value="${pedido.cliente.cpf}">
+                <input type="hidden" th:field="*{cpf}" th:value="${pedido.cpf}">
                 <label for="descricao" class="text-sm font-medium text-gray-700 mb-1"
                        th:text="#{pedido.form.description}">Descrição</label>
                 <textarea id="descricao" th:field="*{descricao}"

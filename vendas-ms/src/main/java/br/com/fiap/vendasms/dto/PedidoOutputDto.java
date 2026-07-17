@@ -31,7 +31,7 @@ public record PedidoOutputDto(UUID id, ClienteDto cliente, String status, String
     public Pedido toEntity() {
         return new Pedido(id,
                 cliente.toEntity(),
-                status == null ? Pedido.Status.PENDENTE_ENVIO : Pedido.Status.valueOf(status),
+                status == null ? Pedido.Status.ENVIO_EM_PROCESSAMENTO : Pedido.Status.valueOf(status),
                 descricao);
     }
 }

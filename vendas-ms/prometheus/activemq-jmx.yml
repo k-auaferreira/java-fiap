@@ -1,0 +1,30 @@
+---
+# JMX Exporter configuration for Apache ActiveMQ Classic
+# Connects to ActiveMQ's JMX port and exposes metrics for Prometheus
+hostPort: "activemq:1099"
+lowercaseOutputName: true
+lowercaseOutputLabelNames: true
+
+rules:
+  # Broker-level metrics (memory, store usage, connections, etc.)
+  - pattern: 'org\.apache\.activemq<type=Broker, brokerName=([^,]+)><>(\w+):'
+    name: activemq_broker_$2
+    labels:
+      brokerName: "$1"
+    type: GAUGE
+
+  # Queue metrics (depth, enqueue/dequeue rate, consumers, producers)
+  - pattern: 'org\.apache\.activemq<type=Broker, brokerName=([^,]+), destinationType=Queue, destinationName=([^,]+)><>(\w+):'
+    name: activemq_queue_$3
+    labels:
+      brokerName: "$1"
+      queue: "$2"
+    type: GAUGE
+
+  # Topic metrics
+  - pattern: 'org\.apache\.activemq<type=Broker, brokerName=([^,]+), destinationType=Topic, destinationName=([^,]+)><>(\w+):'
+    name: activemq_topic_$3
+    labels:
+      brokerName: "$1"
+      topic: "$2"
+    type: GAUGE

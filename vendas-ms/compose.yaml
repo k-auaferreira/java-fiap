@@ -9,5 +9,80 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
+  # Zipkin: receives and displays distributed traces
+  zipkin:
+    image: openzipkin/zipkin:3
+    ports:
+      - "9411:9411"
+
+  # Prometheus: scrapes /actuator/prometheus from vendas-ms
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    # Allows Prometheus (inside Docker) to reach the app running on the host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # Loki: log aggregation backend for Grafana
+  loki:
+    image: grafana/loki:3.0.0
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml
+    command: -config.file=/etc/loki/loki-config.yaml
+
+  # Grafana: visualizes Prometheus metrics
+  grafana:
+    image: grafana/grafana:11.0.0
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+      - loki
+
+  # Spring Boot Admin Server: dashboard for all registered microservices
+  spring-admin:
+    image: codecentric/spring-boot-admin:3.3.5
+    ports:
+      - "8081:8181"
+    environment:
+      - JAVA_OPTS=-Xmx256m -Xms128m
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  activemq:
+    image: 'apache/activemq-classic:latest'
+    ports:
+      - '61616:61616' # JMS
+      - '8161:8161'   # Web console (admin/admin)
+    environment:
+      ACTIVEMQ_ADMIN_LOGIN: admin
+      ACTIVEMQ_ADMIN_PASSWORD: admin
+      ACTIVEMQ_ENABLED_SCHEDULER: 'true'
+    volumes:
+      - ./prometheus/activemq.xml:/opt/apache-activemq/conf/activemq.xml
+
+  # JMX Exporter: reads ActiveMQ JMX metrics and exposes them as Prometheus format
+  jmx-exporter:
+    image: bitnami/jmx-exporter:latest
+    ports:
+      - "5556:5556"
+    volumes:
+      - ./prometheus/activemq-jmx.yml:/config/activemq-jmx.yml
+    command: ["5556", "/config/activemq-jmx.yml"]
+    depends_on:
+      - activemq
+
 volumes:
   mysql_data:
+  grafana_data:

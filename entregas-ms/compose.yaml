@@ -1,4 +1,13 @@
 services:
+  activemq:
+    image: 'apache/activemq-classic:latest'
+    ports:
+      - '61616:61616' # ActiveMQ Broker Port
+      - '8161:8161' # Web console
+    environment:
+      ACTIVEMQ_ADMIN_LOGIN: admin
+      ACTIVEMQ_ADMIN_PASSWORD: admin
+      ACTIVEMQ_ENABLED_SCHEDULER: 'true'
   mysql:
     image: 'mysql:8.0'
     environment:

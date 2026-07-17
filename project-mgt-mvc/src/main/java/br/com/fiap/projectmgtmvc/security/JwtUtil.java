@@ -9,6 +9,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -108,6 +109,12 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public List<SimpleGrantedAuthority> extractRole(String token){
+        Claims claims = extractAllClaims(token);
+        List<String> roles = claims.get("roles",List.class);
+        return roles.stream().map( SimpleGrantedAuthority::new).toList();
     }
 
 }

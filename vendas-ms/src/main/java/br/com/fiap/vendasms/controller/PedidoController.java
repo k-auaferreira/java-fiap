@@ -9,6 +9,9 @@ import br.com.fiap.vendasms.external_interface.feign.CepApi;
 import br.com.fiap.vendasms.external_interface.feign.CepDetails;
 import br.com.fiap.vendasms.service.ClienteService;
 import br.com.fiap.vendasms.service.PedidoService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/pedidos")
 public class PedidoController extends CommonController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PedidoController.class);
 
     private final PedidoService pedidoService;
     private final ClienteService clienteService;
@@ -37,21 +42,25 @@ public class PedidoController extends CommonController {
 
     @GetMapping("/detalhe/{cpf}")
     public String detalhes(@PathVariable("cpf") String cpf, Model model) {
+        logger.info("Buscando pedidos para cliente cpf={}", cpf);
         final Cliente cliente = this.clienteService.findById(cpf);
         if (cliente.getNome() != null) {
             final CepDetails cepDetails = this.cepApi.get(cliente.getCep());
             model.addAttribute("cliente", ClienteDto.from(cliente, cepDetails));
 
             final List<Pedido> pedidos = this.pedidoService.findByClienteCpf(cpf);
+            logger.info("Pedidos encontrados cpf={} total={}", cpf, pedidos.size());
             model.addAttribute("pedidos", PedidoOutputDto.from(pedidos));
 
             return "detalhe-pedidos";
         }
+        logger.warn("Cliente não encontrado, redirecionando cpf={}", cpf);
         return "redirect:/cliente/detalhes/" + cpf;
     }
 
     @PostMapping("/novo")
     public String novo(Model model, String cpf) {
+        logger.info("Abrindo formulário de novo pedido cpf={}", cpf);
         final Cliente cliente = this.clienteService.findById(cpf);
         final CepDetails cepDetails = this.cepApi.get(cliente.getCep());
 
@@ -70,14 +79,14 @@ public class PedidoController extends CommonController {
     }
 
     @PostMapping("/novo/salvar")
-    public String salvar(@ModelAttribute PedidoInputDto pedido) {
-
+    public String salvar(@ModelAttribute PedidoInputDto pedido) throws JsonProcessingException {
+        logger.info("Salvando novo pedido cpf={}", pedido.getCpf());
         final Pedido pedidoEntity = new Pedido(null,
-                new Cliente(pedido.getCpf()),
+                this.clienteService.findById(pedido.getCpf()),
                 Pedido.Status.PENDENTE_ENVIO,
                 pedido.getDescricao());
-
         this.pedidoService.save(pedidoEntity);
+        logger.info("Pedido salvo com sucesso cpf={}", pedido.getCpf());
         return "redirect:/";
     }
 }

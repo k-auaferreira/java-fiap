@@ -50,9 +50,11 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectOutDto> save(@Validated @RequestBody ProjectInDto project) {
         final Project saved = this.projectService.saveOrUpdate(ProjectMapper.toEntity(project));
+
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info("Project saved: {} por {}", saved.getId(),SecurityContextHolder.getContext().getAuthentication().getName() );
-        log.info("Project saved: {} por {}", user);
+        //Apenas para exemplo. Não logar dados sensiveis!!
+        log.info("Project saved por {}", user);
         return ResponseEntity.ok(ProjectMapper.toOutDto(saved));
     }
 
